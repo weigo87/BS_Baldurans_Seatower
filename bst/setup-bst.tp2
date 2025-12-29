@@ -430,7 +430,21 @@ LAM ~bs_DEF_AREA_OFFSETS~                        // LOADS the main offsets used 
 
 INCLUDE ~bst/tpa/AddBG1_AR1200Door.tph~
 
-
+//****************************************************
+/* infotrigger deactivate in AR1300 for tailor shop
+map is overlapping*/
+//****************************************************
+// Rename the triggers to avoid confusion
+COPY_EXISTING ~%SEBaldursGate%.are~  ~override~
+	GET_OFFSET_ARRAY triggers ARE_V10_REGIONS
+	PHP_EACH triggers AS i => off BEGIN
+		READ_ASCII off triggername (32) NULL
+		READ_SHORT off + 0x22 bound_left
+		PATCH_IF ~%triggername%~ STR_EQ ~InfoHouse~ AND bound_left = 0 BEGIN
+			WRITE_ASCII off ~bst_InfoHouse~ #32
+			WRITE_LONG off + 0x60 (THIS | BIT8) //deactivates
+		END
+	END
 
 //##################################################
 // Journal Entries
@@ -2505,4 +2519,6 @@ INCLUDE ~%MOD_FOLDER%/lib/alter_searchmap.tpa~
         areaname = EVAL ~%BaldursGateDocks%~                             // area name, e.g. ~AR3700~
     END
 
+/* compatibility with BGGO */
 
+INCLUDE ~%MOD_FOLDER%/tpa/BGGO_compat.tpa~
