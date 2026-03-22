@@ -119,6 +119,50 @@ ACTION_IF MOD_IS_INSTALLED "bggo.tp2" (ID_OF_LABEL "bggo.tp2" "baldurs_gate_grap
 		END
 		CLEAR_ARRAY x_coord
 		CLEAR_ARRAY y_coord
+		
+		// The tailor shop windows are lit up
+		PATCH_DEFINE_ARRAY x_coord BEGIN 4224 END
+		PATCH_DEFINE_ARRAY y_coord BEGIN 320  END
+		PATCH_PHP_EACH x_coord AS index => x BEGIN
+			LPF fj_are_structure
+			INT_VAR
+				fj_loc_x = $x_coord("%index%")
+				fj_loc_y = $y_coord("%index%")
+				fj_schedule = 0b111000000000000000111111 //Hours 22.00 - 07.00
+				fj_flags = 0b00000000000000000001000101100011	// Visible, blend colours, not covered by wall, don't remove in combat
+				STR_VAR
+				fj_structure_type = animation
+				fj_name = BG1200L
+				fj_bam_resref = BG1200L //bgrd
+			END
+		END
+		CLEAR_ARRAY x_coord
+		CLEAR_ARRAY y_coord
+		
+		PATCH_DEFINE_ARRAY x_coord BEGIN 4306 END
+		PATCH_DEFINE_ARRAY y_coord BEGIN 384  END
+		PATCH_PHP_EACH x_coord AS index => x BEGIN
+			LPF fj_are_structure
+			INT_VAR
+				fj_loc_x = $x_coord("%index%")
+				fj_loc_y = $y_coord("%index%")
+				fj_schedule = 0b111000000000000000111111 //Hours 22.00 - 07.00
+				fj_flags = 0b00000000000000000001000101100011	// Visible, blend colours, not covered by wall, don't remove in combat
+				STR_VAR
+				fj_structure_type = animation
+				fj_name = BG1200R
+				fj_bam_resref = BG1200R //bgrd
+			END
+		END
+		CLEAR_ARRAY x_coord
+		CLEAR_ARRAY y_coord
+		
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~BG1200L.bam~ BEGIN
+		COPY ~%MOD_FOLDER%/bam/BG1200L.bam~ ~override~
+	END
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~BG1200R.bam~ BEGIN
+		COPY ~%MOD_FOLDER%/bam/BG1200R.bam~ ~override~
+	END
 	
 	////////////////////////////////////////////
 	// BG1300.are SEBaldursGate
@@ -185,26 +229,49 @@ ACTION_IF MOD_IS_INSTALLED "bggo.tp2" (ID_OF_LABEL "bggo.tp2" "baldurs_gate_grap
 		CLEAR_ARRAY x_coord
 		CLEAR_ARRAY y_coord
 		
-		// door script for info text when the door is clicked
-		<<<<<<<< .../%MOD_FOLDER%/inlined_door_script.baf
-		IF
-			Global("BGGO_opened_BG01XX","GLOBAL",1)
-		THEN
-			RESPONSE #100
-				SetGlobal("BGGO_trigger_text","MYAREA",1)
-				Unlock("door01")
+		// The tailor shop windows are lit up
+		PATCH_DEFINE_ARRAY x_coord BEGIN 64 END
+		PATCH_DEFINE_ARRAY y_coord BEGIN 384  END
+		PATCH_PHP_EACH x_coord AS index => x BEGIN
+			LPF fj_are_structure
+			INT_VAR
+				fj_loc_x = $x_coord("%index%")
+				fj_loc_y = $y_coord("%index%")
+				fj_schedule = 0b111000000000000000111111 //Hours 22.00 - 07.00
+				fj_flags = 0b00000000000000000001000101100011	// Visible, blend colours, not covered by wall, don't remove in combat
+				STR_VAR
+				fj_structure_type = animation
+				fj_name = BG1300R
+				fj_bam_resref = BG1300R //bgrd
+			END
 		END
-		IF
-			Global("BGGO_trigger_text","MYAREA",0)
-			Clicked([ANYONE])
-			OpenState("door01",FALSE)
-		THEN
-			RESPONSE #100
-				DisplayString("door01",%dialog_string%)
-				SetGlobal("BGGO_trigger_text","MYAREA",1)
-				Unlock("door01")
-		END
-		>>>>>>>>
+		CLEAR_ARRAY x_coord
+		CLEAR_ARRAY y_coord
+		
+	ACTION_IF NOT FILE_EXISTS_IN_GAME ~BG1300R.bam~ BEGIN
+		COPY ~%MOD_FOLDER%/bam/BG1300R.bam~ ~override~
+	END
+		
+	// door script for info text when the door is clicked
+	<<<<<<<< .../%MOD_FOLDER%/inlined_door_script.baf
+	IF
+		Global("BGGO_opened_BG01XX","GLOBAL",1)
+	THEN
+		RESPONSE #100
+			SetGlobal("BGGO_trigger_text","MYAREA",1)
+			Unlock("door01")
+	END
+	IF
+		Global("BGGO_trigger_text","MYAREA",0)
+		Clicked([ANYONE])
+		OpenState("door01",FALSE)
+	THEN
+		RESPONSE #100
+			DisplayString("door01",%dialog_string%)
+			SetGlobal("BGGO_trigger_text","MYAREA",1)
+			Unlock("door01")
+	END
+	>>>>>>>>
 	
 	EXTEND_BOTTOM ~dr01XX13.bcs~ ~.../%MOD_FOLDER%/inlined_door_script.baf~ EVAL
 END
